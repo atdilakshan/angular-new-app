@@ -14,11 +14,14 @@ import {
   UpperCasePipe,
   CurrencyPipe,
   PercentPipe,
+  AsyncPipe,
+  JsonPipe,
 } from '@angular/common';
 import { AppendPipe } from './pipes/append.pipe';
 import { DataService } from './services/data.service';
 import { Data } from './interfaces/data';
-import { response } from 'express';
+import { UserService } from './services/user.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -39,6 +42,8 @@ import { response } from 'express';
     CurrencyPipe,
     PercentPipe,
     AppendPipe,
+    AsyncPipe,
+    JsonPipe,
   ],
   providers: [DataService],
   templateUrl: './app.component.html',
@@ -113,8 +118,24 @@ export class AppComponent {
   data: string[] = [];
   posts: Data[] = [];
 
-  constructor(private dataService: DataService) {
+  user$: Observable<any>;
+
+  userData = {
+    id: 1,
+    name: 'Test name',
+    roles: ['Admin', 'User'],
+    status: {
+      active: true,
+      lastLogin: new Date(2024, 9, 23),
+    },
+  };
+
+  constructor(
+    private dataService: DataService,
+    private userService: UserService
+  ) {
     this.data = this.dataService.getData();
+    this.user$ = this.userService.getUser();
   }
 
   ngOnInit() {
